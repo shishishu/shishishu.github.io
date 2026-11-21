@@ -175,7 +175,6 @@ h3 {
 }
 
 .entry > p {
-  max-width: 47rem;
   margin-top: 0.36rem;
   color: var(--muted);
 }
@@ -185,7 +184,6 @@ h3 {
 }
 
 .work-details {
-  max-width: 76ch;
   margin: 0.75rem 0 0;
   padding-inline-start: 1.3rem;
   color: var(--muted);
