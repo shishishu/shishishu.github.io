@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="shishishu, Senior Algorithm Engineer. Experience, selected projects, and research.">
+    <meta name="color-scheme" content="light dark">
+    <title>shishishu · Senior Algorithm Engineer</title>
+    <link rel="icon" href="./assets/avatar.png" type="image/png">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body id="top">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="wordmark" href="#top">
+          <img src="./assets/avatar.png" alt="" width="24" height="24">
+          shishishu
+        </a>
+        <nav aria-label="Main navigation">
+          <a href="#experience">Experience</a>
+          <a href="#projects">Projects</a>
+          <a href="https://github.com/shishishu">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="intro" aria-labelledby="name">
+        <div>
+          <h1 id="name">shishishu<span aria-hidden="true">.</span></h1>
+          <p class="role-title">Senior Algorithm Engineer</p>
+        </div>
+        <div class="avatar-frame" aria-hidden="true">
+          <img src="./assets/avatar.png" alt="" width="136" height="136">
+        </div>
+      </section>
+
+      <section class="content-section" id="experience" aria-labelledby="experience-title">
+        <h2 id="experience-title">Experience</h2>
+        <ul class="entry-list">
+          <li class="entry">
+            <div class="entry-heading">
+              <h3>Bilibili <span class="entry-role">Senior Algorithm Engineer</span></h3>
+              <p class="entry-meta">Shanghai, China · <time datetime="2019-07">Jul 2019</time> – Present</p>
+            </div>
+            <p>Core member of the team building Bilibili’s large-scale online ad recommendation system.</p>
+            <ul class="work-details">
+              <li><strong>Generative retrieval.</strong> Designed and deployed a lightweight model that generates candidates in real time for e-commerce recommendations.</li>
+              <li><strong>Pre-ranking.</strong> Trained the pre-ranker to select candidates as a set using the final ranker’s ordering. This shift from pointwise prediction substantially improved pre-ranking efficiency.</li>
+              <li><strong>Delayed feedback in final ranking.</strong> Developed a training framework that incorporates late conversions as positive examples while keeping the conversion-rate model stable.</li>
+              <li><strong>Scaling feature interactions.</strong> Co-designed <a href="#mlcc">MLCC</a>, now the feature-interaction backbone of Bilibili’s ad ranking system. Scaling it across successive deployments substantially increased advertiser value within production latency limits.</li>
+            </ul>
+          </li>
+          <li class="entry">
+            <div class="entry-heading">
+              <h3>KLA <span class="entry-role">Applications Engineer</span></h3>
+              <p class="entry-meta">Shanghai, China · <time datetime="2017-07">Jul 2017</time> – <time datetime="2018-12">Dec 2018</time></p>
+            </div>
+            <p>Specialized in optical wafer inspection for DRAM and 3D NAND production using KLA’s 29/39-series broadband plasma systems.</p>
+            <ul class="work-details">
+              <li><strong>Fab applications.</strong> Characterized wafer defects and validated detection performance with engineers at ChangXin Memory Technologies (CXMT) in Hefei, Intel in Dalian, and Yangtze Memory Technologies (YMTC) in Wuhan.</li>
+              <li><strong>Equipment qualification.</strong> Tested competing inspection tools in fab trials and supported deliveries to Intel in Dalian and Macronix in Taiwan.</li>
+              <li><strong>Technical certification.</strong> Completed applications training at KLA headquarters in Milpitas, California, from August 2017 to February 2018 and earned L3 certification.</li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+      <section class="content-section" id="projects" aria-labelledby="projects-title">
+        <h2 id="projects-title">Selected Projects</h2>
+        <ul class="entry-list">
+          <li class="entry">
+            <h3 id="mlcc">MLCC</h3>
+            <p>Multi-Level Compression Cross Networks (MLCC) use hierarchical compression to model higher-order feature interactions. MC-MLCC expands interaction capacity by learning feature crosses in parallel channels.</p>
+            <p class="entry-links">
+              <a href="https://github.com/shishishu/MLCC" aria-label="MLCC on GitHub">GitHub</a>
+              <a href="https://arxiv.org/abs/2602.12041" aria-label="MLCC paper">Paper</a>
+            </p>
+          </li>
+          <li class="entry">
+            <h3>LLM Inference Acceleration</h3>
+            <p>Studied LLM inference bottlenecks through a literature review and hands-on experiments. The reading list covers efficient attention, quantization, KV cache management, and accelerator design.</p>
+            <p class="entry-links">
+              <a href="https://github.com/shishishu/LLM-Inference-Acceleration" aria-label="LLM Inference Acceleration on GitHub">GitHub</a>
+            </p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="content-section" id="education" aria-labelledby="education-title">
+        <h2 id="education-title">Education</h2>
+        <ul class="entry-list">
+          <li class="entry">
+            <div class="entry-heading">
+              <h3>Tsinghua University</h3>
+              <p class="entry-meta"><time datetime="2014">2014</time>–<time datetime="2017">2017</time></p>
+            </div>
+            <p class="degree">M.Eng. in Materials Science and Engineering</p>
+            <p>Studied under Prof. Cheng Song in Prof. Feng Pan’s group.</p>
+            <p>Designed and fabricated spintronic devices to study electrically controlled magnetism and magnon transport.</p>
+            <p>Received the Outstanding Master’s Thesis Award.</p>
+          </li>
+          <li class="entry">
+            <div class="entry-heading">
+              <h3>Nanjing University of Science and Technology</h3>
+              <p class="entry-meta"><time datetime="2010">2010</time>–<time datetime="2014">2014</time></p>
+            </div>
+            <p class="degree">B.Eng. in Materials Science and Engineering</p>
+            <p>Ranked first in a cohort of 150 and received the National Scholarship.</p>
+            <p>One of seven students university-wide to receive the President’s Medal.</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="content-section" id="research" aria-labelledby="research-title">
+        <h2 id="research-title">Publications, Patents &amp; Honors</h2>
+        <div class="research-list">
+          <div class="research-group">
+            <h3>Publications</h3>
+            <ul class="publications">
+              <li>
+                <time datetime="2027">2027</time>
+                <div>
+                  <a lang="en" href="https://arxiv.org/abs/2602.12041">Compress, Cross and Scale: Multi-Level Compression Cross Networks for Efficient Scaling in Recommender Systems</a>
+                  <p>20th ACM International Conference on Web Search and Data Mining (WSDM) · Accepted · Co-first author</p>
+                </div>
+              </li>
+              <li>
+                <time datetime="2017">2017</time>
+                <div>
+                  <a lang="en" href="https://pubs.aip.org/aip/apl/article-abstract/110/6/062407/33187/Lateral-transport-properties-of-thermally-excited">Lateral Transport Properties of Thermally Excited Magnons in Yttrium Iron Garnet Films</a>
+                  <p>Applied Physics Letters · First author</p>
+                </div>
+              </li>
+              <li>
+                <time datetime="2016">2016</time>
+                <div>
+                  <a lang="en" href="https://pubs.acs.org/doi/10.1021/acs.jpcc.5b10794">Role of Oxygen Ion Migration in the Electrical Control of Magnetism in Pt/Co/Ni/HfO₂ Films</a>
+                  <p>The Journal of Physical Chemistry C · First author</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="research-group">
+            <h3>Patents</h3>
+            <ul>
+              <li>
+                Method and Apparatus for Style Transfer in Danmaku Comments
+                <p>Chinese invention patent CN114118025B · Granted</p>
+              </li>
+              <li>
+                Recommendation Method and Apparatus Based on a Multi-Level Compression Cross Model
+                <p>Chinese patent application CN202610213103.9</p>
+              </li>
+            </ul>
+          </div>
+          <div class="research-group">
+            <h3>Mathematical Modeling Honors</h3>
+            <ul>
+              <li>Meritorious Winner, COMAP Mathematical Contest in Modeling (MCM), USA</li>
+              <li>Second Prize, Contemporary Undergraduate Mathematical Contest in Modeling (CUMCM), China</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <section class="content-section" id="interests" aria-labelledby="interests-title">
+        <h2 id="interests-title">Currently</h2>
+        <p>I’m exploring how to build agents and structure their workflows.</p>
+        <p>On the hardware side, I follow research on chip design and compute-in-memory architectures.</p>
+        <p>Outside work, I enjoy novels and films.</p>
+      </section>
+    </main>
+
+    <footer class="site-footer container">
+      <small>© shishishu · <a href="mailto:zhouxj_xinhua@163.com">Email</a><br>Last updated <time datetime="2026-11-21">Nov 21, 2026</time></small>
+      <a href="#top">Back to top</a>
+    </footer>
+  </body>
+</html>
