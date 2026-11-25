@@ -133,7 +133,22 @@ async function refreshLikes() {
   updateLikeButton();
 }
 
+async function loadLikesSnapshot() {
+  try {
+    const response = await fetch('./assets/likes.json', { cache: 'no-cache' });
+    if (!response.ok) return;
+    const { value } = await response.json();
+    if (Number.isSafeInteger(value) && value >= 0) {
+      likes.confirm(value);
+      updateLikeButton();
+    }
+  } catch {
+    // The live request and the browser's cached count work independently.
+  }
+}
+
 refreshViews();
+if (namespace === 'shishishu.github.io') loadLikesSnapshot();
 refreshLikes();
 
 window.addEventListener('storage', event => {

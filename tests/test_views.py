@@ -21,6 +21,7 @@ class ViewCountTests(unittest.TestCase):
         self.page = self.context.new_page()
         self.hits = 0
         self.reads = 0
+        self.snapshot_total = 0
         self.like_total = 12
         self.like_hits = 0
         self.fail_like_read = False
@@ -28,6 +29,7 @@ class ViewCountTests(unittest.TestCase):
         self.lose_hit_response = False
         self.fail_read = False
         self.context.route(HOME + '**', self.static_file)
+        self.context.route(HOME + 'assets/likes.json', lambda route: route.fulfill(json={'value': self.snapshot_total}))
         self.context.route('https://abacus.jasoncameron.dev/**', self.counter)
 
     def static_file(self, route):
@@ -108,6 +110,23 @@ class ViewCountTests(unittest.TestCase):
         other.goto(HOME)
         expect(other.locator('#view-count')).to_have_text('42')
         expect(self.page.locator('#view-count')).to_have_text('42')
+
+    def test_cold_browser_uses_published_snapshot_during_outage(self):
+        self.snapshot_total = 7
+        self.fail_like_read = True
+        self.page.goto(HOME, wait_until='networkidle')
+        expect(self.page.locator('#like-count')).to_have_text('7')
+        expect(self.page.locator('#like-button')).to_be_enabled()
+        self.assertEqual(self.like_hits, 0)
+        self.fail_like_read = False
+        self.page.reload(wait_until='networkidle')
+        expect(self.page.locator('#like-count')).to_have_text('12')
+
+    def test_missing_counter_cannot_erase_published_likes(self):
+        self.snapshot_total = 7
+        self.page.route('**/get/*/likes', lambda route: route.fulfill(status=404))
+        self.page.goto(HOME, wait_until='networkidle')
+        expect(self.page.locator('#like-count')).to_have_text('7')
 
     def test_reader_keeps_like_total_during_outage(self):
         self.like_total = 0

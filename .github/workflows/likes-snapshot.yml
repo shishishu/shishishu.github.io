@@ -1,0 +1,40 @@
+name: Back up the homepage like count
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Save confirmed increases and publish the snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          endpoint="repos/$GITHUB_REPOSITORY/contents/assets/likes.json"
+          snapshot=$(gh api "$endpoint?ref=main")
+          value_filter='.value | numbers | select(. >= 0 and . <= 9007199254740991 and . == floor)'
+          saved=$(jq -r '.content' <<< "$snapshot" | base64 --decode | jq -er "$value_filter")
+          live=$(curl --fail --silent --show-error --max-time 40 --retry 2 \
+            'https://abacus.jasoncameron.dev/get/shishishu.github.io/likes' | jq -er "$value_filter")
+          if (( live > saved )); then
+            content=$(printf '{"value":%s}\n' "$live" | base64 -w 0)
+            gh api --method PUT "$endpoint" -f branch=main -f message='Update homepage like snapshot' \
+              -f sha="$(jq -r '.sha' <<< "$snapshot")" -f content="$content" --silent
+            saved=$live
+          fi
+          # A commit made with GITHUB_TOKEN may need an explicit Pages build.
+          published=$(curl --fail --silent --show-error --max-time 20 \
+            'https://shishishu.github.io/assets/likes.json' | jq -er "$value_filter")
+          if (( published < saved )); then
+            gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds" --silent
+          fi
