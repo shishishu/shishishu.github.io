@@ -65,27 +65,20 @@ figcaption strong{color:var(--ink)}
   margin-inline:calc(-1 * var(--bleed));background:#fffefa;border-color:#9fb9aa;
   box-shadow:0 .4rem 1.4rem rgb(32 62 48 / .09)
 }
-.interactive-cards .reading-card:not(:has(details[open])){cursor:pointer}
+.interactive-cards .reading-card{cursor:pointer}
 @media(hover:hover){
   .interactive-cards .reading-card:not(:has(details[open])):hover{background:#ecf2e9;border-color:#99b4a4}
 }
-.reading-card .meta{min-height:2.75rem;align-content:center}
-.reading-card h2{clear:both}
 .article-details summary{
-  position:absolute;inset-block-start:var(--card-pad);inset-inline-end:var(--card-pad);
-  display:grid;place-items:center;min-width:44px;min-height:44px;color:var(--pine);
-  cursor:pointer;list-style:none;border-radius:50%
+  display:flex;align-items:center;width:fit-content;min-height:44px;margin-top:.25rem;
+  color:var(--pine);font-size:.88rem;font-weight:600;list-style:none;cursor:pointer;
+  text-decoration:underline;text-decoration-color:#97b1a4;text-underline-offset:.28em
 }
+.article-details summary:hover{text-decoration-color:currentColor}
 .article-details summary::-webkit-details-marker{display:none}
-.article-details summary::after{
-  content:"";width:.55rem;height:.55rem;border:solid currentColor;border-width:0 2px 2px 0;
-  transform:rotate(45deg);transition:transform .22s ease
-}
-.article-details[open] summary::after{transform:rotate(225deg)}
-.article-details summary span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 .article-details .less,.article-details[open] .more{display:none}
 .article-details[open] .less{display:inline}
-.article-details summary:focus-visible,.close-card:focus-visible,.like:focus-visible{outline:2px solid var(--pine);outline-offset:2px}
+.article-details summary:focus-visible,.close-card:focus-visible{outline:2px solid var(--pine);outline-offset:2px}
 .article-details::details-content{
   display:grid;grid-template-rows:0fr;opacity:0;
   transition:grid-template-rows .3s cubic-bezier(.2,.75,.25,1),opacity .2s ease,content-visibility .3s allow-discrete
@@ -98,24 +91,15 @@ figcaption strong{color:var(--ink)}
   border-radius:.5rem;background:transparent;color:var(--pine);font:inherit;cursor:pointer
 }
 @media(prefers-reduced-motion:reduce){
-  .reading-card,.article-details::details-content,.article-details summary::after{transition:none}
+  .reading-card,.article-details::details-content{transition:none}
 }
-.like{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;min-width:44px;min-height:44px;padding:0 .6rem;border:1px solid var(--rule);border-radius:.6rem;background:transparent;color:var(--muted);font:inherit;font-size:.9rem;font-variant-numeric:tabular-nums;cursor:pointer}
-.like:disabled{cursor:default}
-.like[aria-pressed=true]{color:#a33453}
-.like[aria-pressed=true] svg{fill:currentColor}
-.reading-card>.like{float:right;margin:0 2.85rem 0 .65rem}
-.engagement{display:flex;align-items:center;gap:1rem;font-variant-numeric:tabular-nums}
-#counter-status:not(:empty){padding-bottom:1rem;color:var(--muted);font-size:.875rem}
 </style></head>
 <body><main><header><a class="brand" href="index.html" data-follow-language>AI Buzz Radar</a>
 <div class="language-switch" role="group" aria-label="阅读语言" data-en-label="Reading language" hidden>
 <button type="button" lang="zh-CN" data-language="zh" aria-pressed="true">中文</button>
 <button type="button" lang="en" data-language="en" aria-pressed="false">English</button></div></header>
 <div class="mast"><h1 data-en="Agent Systems Daily">Agent 系统日报</h1><p><time datetime="2026-11-25" data-en="November 25, 2026">2026 年 11 月 25 日</time> <span>·</span> <span data-en="3 articles">3 篇</span></p></div>
-<article class="reading-card"><button type="button" class="like" data-counter="article-a9e1956a3a6f707d8ed5b52c" aria-describedby="total-article-a9e1956a3a6f707d8ed5b52c" aria-label="为文章点赞" data-en-label="Like article" aria-pressed="false" disabled>
-<svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0l-1 1-1-1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>
-<span class="total" id="total-article-a9e1956a3a6f707d8ed5b52c">—</span></button><p class="meta"><em>首次入选</em>　<strong>工具结果交付</strong>　2026-10-30　arXiv</p>
+<article class="reading-card"><p class="meta"><em>首次入选</em>　<strong>工具结果交付</strong>　2026-10-30　arXiv</p>
 <h2>Fidelity Collapses with Table Size, Not Turn Count: Delivery Architecture in a Deployed Tool-Using Agent</h2>
 <h3>推荐理由</h3>
 <p>为多轮查询智能体制定验收标准的工程师，可据此判断是否要按输入表的行数分档，逐档核对筛选结果。</p>
@@ -128,9 +112,7 @@ figcaption strong{color:var(--ink)}
 <p>实验同时引入了跨轮保存记录和绕过模型交付结果两项改动，只测出了两者的合计收益。 <a href="https://arxiv.org/html/2611.00442v1#Sx1.SS0.SSS0.Px4">原文章节</a></p>
 <p>可固定会话状态和筛选参数，按业务中常见的表长回放，对两条路径逐行核对记录及字段。若模型重述在常见的最大表上也能稳定达到验收标准，可暂缓引入旁路。</p>
 <p class="full"><a href="https://arxiv.org/html/2611.00442v1">英文原文</a></p>
-<button class="close-card" type="button">收起并返回卡片</button></div></details></article><article class="reading-card"><button type="button" class="like" data-counter="article-696279831be252ab303299be" aria-describedby="total-article-696279831be252ab303299be" aria-label="为文章点赞" data-en-label="Like article" aria-pressed="false" disabled>
-<svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0l-1 1-1-1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>
-<span class="total" id="total-article-696279831be252ab303299be">—</span></button><p class="meta"><em>再度入选</em>　<strong>命令执行沙箱</strong>　2026-11-18　OpenAI</p>
+<button class="close-card" type="button">收起并返回卡片</button></div></details></article><article class="reading-card"><p class="meta"><em>再度入选</em>　<strong>命令执行沙箱</strong>　2026-11-18　OpenAI</p>
 <h2>Inside the Codex sandbox</h2>
 <h3>推荐理由</h3>
 <p>接入本地 MCP 服务的开发者可参考文中的记忆服务示例，判断哪些依赖可以提前备好，以及服务运行时还需要写入哪些目录。</p>
@@ -146,9 +128,7 @@ figcaption strong{color:var(--ink)}
 <p>对于配置文件中通过 stdio 接入的 MCP 服务，Codex 无法可靠推断它需要哪些文件或网络服务，因此不会自动将启动命令放入沙箱。 <a href="https://openai.com/en-US/index/inside-the-codex-sandbox/#example-sandboxing-an-mcp-server">原文章节</a></p>
 <p>建议先在禁网条件下测试启动和一次典型工具调用。若调用只有在特定域名可达时才成功，就为该服务配置代理，只放行该域名。</p>
 <p class="full"><a href="https://openai.com/en-US/index/inside-the-codex-sandbox/">英文原文</a>　<a href="https://openai.com/zh-Hans-CN/index/inside-the-codex-sandbox/">官方中文译文</a></p>
-<button class="close-card" type="button">收起并返回卡片</button></div></details></article><article class="reading-card"><button type="button" class="like" data-counter="article-b017db0483658dfcca18ad82" aria-describedby="total-article-b017db0483658dfcca18ad82" aria-label="为文章点赞" data-en-label="Like article" aria-pressed="false" disabled>
-<svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0l-1 1-1-1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>
-<span class="total" id="total-article-b017db0483658dfcca18ad82">—</span></button><p class="meta"><em>首次入选</em>　<strong>智能体记忆层</strong>　2026-10-28　LangChain</p>
+<button class="close-card" type="button">收起并返回卡片</button></div></details></article><article class="reading-card"><p class="meta"><em>首次入选</em>　<strong>智能体记忆层</strong>　2026-10-28　LangChain</p>
 <h2>Building Evidence-Grounded Agent Memory with OpenWiki and Graphs</h2>
 <h3>推荐理由</h3>
 <p>需要复核智能体答案出处的工程师，可参考文中对引用重合度的评测，判断是否值得为维基中的陈述建立通往原文段落的证据图。</p>
@@ -164,9 +144,7 @@ figcaption strong{color:var(--ink)}
 <button class="close-card" type="button">收起并返回卡片</button></div></details></article>
 <footer><div class="edition-credit"><span data-en="Edited by Mr. Tree &amp; GPT">编辑：树先生 &amp; GPT</span>
 <span><span data-en="Updated">更新于</span> <time datetime="2026-11-25T11:35:46.316659+08:00">2026-11-25 11:35 UTC+8</time></span>
-</div><div class="engagement"><span><span data-en="Views">浏览量</span> <span id="views">—</span></span><button type="button" class="like" data-counter="likes" aria-describedby="total-likes" aria-label="为日报点赞" data-en-label="Like the daily" aria-pressed="false" disabled>
-<svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0l-1 1-1-1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>
-<span class="total" id="total-likes">—</span></button></div><a href="#" data-en="Back to top ↑">回到顶部 ↑</a></footer><div id="counter-status" role="status" aria-live="polite"></div></main>
+</div><a href="#" data-en="Back to top ↑">回到顶部 ↑</a></footer></main>
 
 <dialog class="image-viewer" aria-label="原图" data-en-label="Original figure">
 <form method="dialog"><button type="button" class="original-size" data-en="Original size" hidden>原始尺寸</button><button autofocus data-en="Close figure">关闭原图</button></form>
@@ -218,8 +196,7 @@ const cards = Array.from(document.querySelectorAll("main > article"), (article, 
   template.innerHTML = english[i];
   const figure = template.content.querySelector("img");
   if (figure) figure.src = article.querySelector("img").src;
-  const like = article.querySelector(".like");
-  return {article, like, zh: [...article.childNodes].filter(node => node !== like), en: [...template.content.childNodes]};
+  return {article, zh: [...article.childNodes], en: [...template.content.childNodes]};
 });
 const labels = [...document.querySelectorAll("[data-en]")].map(node => [node, node.textContent]);
 const ariaLabels = [...document.querySelectorAll("[data-en-label]")].map(node => [node, node.getAttribute("aria-label")]);
@@ -229,7 +206,7 @@ function displayLanguage(language) {
   const isEnglish = language === "en";
   for (const card of cards) {
     const open = card.article.querySelector("details").open;
-    card.article.replaceChildren(card.like, ...card[language]);
+    card.article.replaceChildren(...card[language]);
     card.article.querySelector("details").open = open;
   }
   for (const [node, zh] of labels) node.textContent = isEnglish ? node.dataset.en : zh;
@@ -261,7 +238,10 @@ cardList.addEventListener("click", event => {
   const card = event.target.closest(".reading-card");
   if (!card || event.defaultPrevented) return;
   const details = card.querySelector(".article-details");
-  if (event.target.closest(".close-card")) {
+  const closeButton = event.target.closest(".close-card");
+  if (!closeButton && (event.target.closest("summary, button, a, input, select, textarea")
+                       || !window.getSelection().isCollapsed)) return;
+  if (details.open) {
     details.open = false;
     details.querySelector("summary").focus({preventScroll: true});
     if (card.getBoundingClientRect().top < 0) {
@@ -270,111 +250,9 @@ cardList.addEventListener("click", event => {
         behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth"
       });
     }
-  } else if (!details.open && !event.target.closest("summary, button, a, input, select, textarea")
-             && !window.getSelection()?.toString()) {
+  } else {
     details.open = true;
   }
 });
 </script>
-<script>(() => {
-  const buttons = [...document.querySelectorAll("button[data-counter]")];
-  const live = location.origin === "https://shishishu.github.io" && location.pathname.startsWith("/radar/");
-  const prefix = "ai-buzz-radar:";
-  const status = document.querySelector("#counter-status");
-
-  function stored(key) {
-    try { return localStorage.getItem(prefix + key); } catch { return null; }
-  }
-  function save(key, value) {
-    try { localStorage.setItem(prefix + key, String(value)); } catch { /* Private browsing. */ }
-  }
-  async function counter(action, key) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 45000);
-    try {
-      const url = new URL("https://abacus.jasoncameron.dev/" + action + "/shishishu.github.io/radar-" + key);
-      url.searchParams.set("t", Date.now());
-      const response = await fetch(url, {
-        cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", signal: controller.signal
-      });
-      const data = await response.json();
-      if (action === "get" && response.status === 404 && data.error === "Key not found") return 0;
-      if (!response.ok || !Number.isSafeInteger(data.value) || data.value < 0) throw Error("counter unavailable");
-      return data.value;
-    } finally { clearTimeout(timeout); }
-  }
-  function show(element, key, value) {
-    const last = stored("total:" + key);
-    const values = [element.dataset.value, last, value]
-      .filter(n => n != null && /^\d+$/.test(n)).map(Number).filter(Number.isSafeInteger);
-    if (!values.length) return;
-    const total = Math.max(...values);
-    element.dataset.value = total;
-    element.textContent = total.toLocaleString();
-    if (value != null && (last === null || total !== Number(last))) save("total:" + key, total);
-  }
-  async function refresh(element, key) {
-    try { show(element, key, await counter("get", key)); }
-    catch {
-      show(element, key);
-      // A read is safe to retry even when the previous request reached the server.
-      setTimeout(async () => {
-        try { show(element, key, await counter("get", key)); }
-        catch { show(element, key); }
-      }, 3000);
-    }
-  }
-  function liked(button) {
-    return button.getAttribute("aria-pressed") === "true" || stored("liked:" + button.dataset.counter) === "1";
-  }
-  function renderButton(button) {
-    button.setAttribute("aria-pressed", String(liked(button)));
-    button.disabled = !live || liked(button) || button.hasAttribute("aria-busy");
-  }
-  for (const button of buttons) {
-    const key = button.dataset.counter;
-    const element = button.querySelector(".total");
-    show(element, key);
-    renderButton(button);
-    if (!live) continue;
-    refresh(element, key);
-    button.addEventListener("click", async () => {
-      if (button.disabled) return;
-      button.setAttribute("aria-busy", "true");
-      renderButton(button);
-      status.textContent = "";
-      async function vote() {
-        if (liked(button)) return;
-        const total = await counter("hit", key);
-        save("liked:" + key, "1");
-        button.setAttribute("aria-pressed", "true");
-        show(element, key, total);
-      }
-      try {
-        if (navigator.locks) await navigator.locks.request(prefix + key, vote);
-        else await vote();
-      } catch {
-        status.textContent = document.documentElement.lang === "en"
-          ? "Could not confirm your like." : "暂时无法确认点赞。";
-        refresh(element, key);
-      } finally {
-        button.removeAttribute("aria-busy");
-        renderButton(button);
-      }
-    });
-  }
-  const views = document.getElementById("views");
-  show(views, "views");
-  if (!live) return;
-  window.addEventListener("storage", () => {
-    show(views, "views");
-    for (const button of buttons) {
-      show(button.querySelector(".total"), button.dataset.counter);
-      renderButton(button);
-    }
-  });
-  // Count each document load once. Switching language or opening a card stays in this document.
-  counter("hit", "views").then(value => show(views, "views", value))
-    .catch(() => refresh(views, "views"));
-})();</script>
 </body></html>
