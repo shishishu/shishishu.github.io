@@ -47,7 +47,8 @@ a:hover {
   color: var(--accent);
 }
 
-a:focus-visible {
+a:focus-visible,
+button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
 }
@@ -247,6 +248,7 @@ h3 {
 }
 
 .site-footer {
+  flex-wrap: wrap;
   padding-block: 1.2rem;
   border-top: 1px solid var(--rule);
   color: var(--muted);
@@ -258,6 +260,50 @@ h3 {
 
 .site-footer a {
   font-size: 0.875rem;
+}
+
+.footer-actions,
+#engagement:not([hidden]) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+}
+
+#engagement {
+  font: 0.875rem / 1.5 var(--mono);
+}
+
+#like-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0 0.8rem;
+  border: 1px solid var(--rule);
+  border-radius: 2rem;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+}
+
+#like-button:hover:enabled,
+#like-button.liked {
+  border-color: currentColor;
+}
+
+#like-button.liked svg {
+  fill: currentColor;
+}
+
+#like-button:disabled {
+  cursor: default;
+}
+
+#like-status:empty {
+  display: none;
 }
 
 @media (max-width: 38rem) {
