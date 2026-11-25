@@ -72,13 +72,20 @@ figcaption strong{color:var(--ink)}
 .article-details summary{
   display:flex;align-items:center;width:fit-content;min-height:44px;margin-top:.25rem;
   color:var(--pine);font-size:.88rem;font-weight:600;list-style:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent
+}
+.article-details summary span{
   text-decoration:underline;text-decoration-color:#97b1a4;text-underline-offset:.28em
 }
-.article-details summary:hover{text-decoration-color:currentColor}
+.article-details summary:hover span{text-decoration-color:currentColor}
 .article-details summary::-webkit-details-marker{display:none}
 .article-details .less,.article-details[open] .more{display:none}
 .article-details[open] .less{display:inline}
-.article-details summary:focus-visible,.close-card:focus-visible{outline:2px solid var(--pine);outline-offset:2px}
+.article-details summary:focus{outline:none}
+.article-details summary:focus-visible span{
+  text-decoration:underline double currentColor;text-decoration-thickness:2px
+}
+.close-card:focus-visible{outline:2px solid var(--pine);outline-offset:2px}
 .article-details::details-content{
   display:grid;grid-template-rows:0fr;opacity:0;
   transition:grid-template-rows .3s cubic-bezier(.2,.75,.25,1),opacity .2s ease,content-visibility .3s allow-discrete
@@ -243,7 +250,7 @@ cardList.addEventListener("click", event => {
                        || !window.getSelection().isCollapsed)) return;
   if (details.open) {
     details.open = false;
-    details.querySelector("summary").focus({preventScroll: true});
+    if (closeButton) details.querySelector("summary").focus({preventScroll: true});
     if (card.getBoundingClientRect().top < 0) {
       card.scrollIntoView({
         block: "start",
