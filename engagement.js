@@ -5,16 +5,61 @@ const storageKey = 'homepage-liked';
 const likeButton = document.querySelector('#like-button');
 const likeCount = document.querySelector('#like-count');
 const statusMessage = document.querySelector('#like-status');
-let liked = false;
-try {
-  liked = localStorage.getItem(storageKey) !== null;
-} catch {
-  // Storage can be disabled. Keep the interaction available for this page load.
+
+function readStored(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
 }
+
+function writeStored(key, value) {
+  try {
+    localStorage.setItem(key, String(value));
+  } catch {
+    // The current page still works when storage is blocked.
+  }
+}
+
+function cachedCount(key, element) {
+  let last = null;
+
+  function show(raw) {
+    if (raw === null || !/^\d+$/.test(raw)) return;
+    const value = Number(raw);
+    if (!Number.isSafeInteger(value) || (last !== null && value <= last)) return;
+    last = value;
+    element.textContent = value.toLocaleString();
+    element.title = 'Last confirmed count';
+  }
+
+  show(readStored(key));
+  return {
+    key,
+    show,
+    confirm(total) {
+      show(readStored(key));
+      show(total);
+      writeStored(key, last);
+    },
+    unavailable() {
+      if (last === null) element.textContent = 'unavailable';
+    },
+  };
+}
+
+const likes = cachedCount(`homepage-likes:${namespace}`, likeCount);
+const views = cachedCount(`homepage-views:${namespace}`, document.querySelector('#view-count'));
+// Older versions only saved a total when the visitor liked the page.
+const previousLike = readStored(storageKey);
+let liked = previousLike !== null;
+let submittingLike = false;
+likes.show(previousLike);
 
 async function counter(operation, key) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), key === 'views' ? 30000 : 8000);
+  const timer = setTimeout(() => controller.abort(), 30000);
   try {
     const response = await fetch(`https://abacus.jasoncameron.dev/${operation}/${namespace}/${key}`, {
       cache: 'no-store',
@@ -37,51 +82,33 @@ function updateLikeButton() {
   likeButton.title = label;
   likeButton.setAttribute('aria-label', `${label}. Likes: ${likeCount.textContent}`);
   likeButton.classList.toggle('liked', liked);
-  likeButton.disabled = liked;
+  likeButton.disabled = liked || submittingLike;
 }
 
 likeButton.addEventListener('click', async () => {
-  likeButton.disabled = true;
+  if (liked || submittingLike) return;
+  submittingLike = true;
+  updateLikeButton();
   statusMessage.textContent = '';
   try {
     const total = await counter('hit', 'likes');
-    likeCount.textContent = total.toLocaleString();
     liked = true;
-    try {
-      localStorage.setItem(storageKey, String(total));
-    } catch {
-      // The in-memory flag still prevents repeat clicks.
-    }
+    writeStored(storageKey, total);
+    likes.confirm(total);
     statusMessage.textContent = 'Liked!';
   } catch {
-    statusMessage.textContent = 'Couldn’t confirm your like. Try again.';
+    statusMessage.textContent = 'Couldn’t confirm your like.';
+    refreshLikes();
   } finally {
+    submittingLike = false;
     updateLikeButton();
   }
 });
 
 document.querySelector('#engagement').hidden = false;
-const viewCount = document.querySelector('#view-count');
-const viewsKey = `homepage-views:${namespace}`;
-let lastViews = null;
-
-function showSavedViews(raw) {
-  if (raw === null || !/^\d+$/.test(raw)) return;
-  const value = Number(raw);
-  if (!Number.isSafeInteger(value) || (lastViews !== null && value <= lastViews)) return;
-  lastViews = value;
-  viewCount.textContent = value.toLocaleString();
-  viewCount.title = 'Last confirmed view count';
-}
+updateLikeButton();
 
 async function refreshViews() {
-  try {
-    const stored = localStorage.getItem(viewsKey);
-    showSavedViews(stored);
-  } catch {
-    // Visitors who block storage still get the shared server count.
-  }
-
   let total;
   try {
     total = await counter('hit', 'views');
@@ -90,30 +117,34 @@ async function refreshViews() {
     try {
       total = await counter('get', 'views');
     } catch {
-      if (lastViews === null) viewCount.textContent = 'unavailable';
+      views.unavailable();
       return;
     }
   }
-  showSavedViews(String(total));
+  views.confirm(total);
+}
+
+async function refreshLikes() {
   try {
-    showSavedViews(localStorage.getItem(viewsKey));
-    localStorage.setItem(viewsKey, String(lastViews));
+    likes.confirm(await counter('get', 'likes'));
   } catch {
-    // The current page can still display the confirmed count.
+    likes.unavailable();
   }
+  updateLikeButton();
 }
 
 refreshViews();
-counter('get', 'likes')
-  .then(total => { likeCount.textContent = total.toLocaleString(); })
-  .catch(() => { likeCount.textContent = '—'; })
-  .finally(updateLikeButton);
+refreshLikes();
 
 window.addEventListener('storage', event => {
-  if (event.key === viewsKey) showSavedViews(event.newValue);
+  if (event.key === views.key) views.show(event.newValue);
+  if (event.key === likes.key) {
+    likes.show(event.newValue);
+    updateLikeButton();
+  }
   if (event.key === storageKey && event.newValue !== null) {
     liked = true;
-    likeCount.textContent = Number(event.newValue).toLocaleString();
+    likes.show(event.newValue);
     updateLikeButton();
   }
 });
