@@ -13,17 +13,23 @@ try {
 }
 
 async function counter(operation, key) {
-  const response = await fetch(`https://abacus.jasoncameron.dev/${operation}/${namespace}/${key}`, {
-    cache: 'no-store',
-    credentials: 'omit',
-    referrerPolicy: 'no-referrer',
-    signal: AbortSignal.timeout(8000),
-  });
-  if (operation === 'get' && response.status === 404) return 0;
-  if (!response.ok) throw new Error('Counter unavailable');
-  const { value } = await response.json();
-  if (!Number.isSafeInteger(value) || value < 0) throw new Error('Invalid count');
-  return value;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), key === 'views' ? 30000 : 8000);
+  try {
+    const response = await fetch(`https://abacus.jasoncameron.dev/${operation}/${namespace}/${key}`, {
+      cache: 'no-store',
+      credentials: 'omit',
+      referrerPolicy: 'no-referrer',
+      signal: controller.signal,
+    });
+    if (operation === 'get' && response.status === 404) return 0;
+    if (!response.ok) throw new Error('Counter unavailable');
+    const { value } = await response.json();
+    if (!Number.isSafeInteger(value) || value < 0) throw new Error('Invalid count');
+    return value;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 function updateLikeButton() {
@@ -56,15 +62,55 @@ likeButton.addEventListener('click', async () => {
 
 document.querySelector('#engagement').hidden = false;
 const viewCount = document.querySelector('#view-count');
-counter('hit', 'views')
-  .then(total => { viewCount.textContent = total.toLocaleString(); })
-  .catch(() => { viewCount.textContent = '—'; });
+const viewsKey = `homepage-views:${namespace}`;
+let lastViews = null;
+
+function showSavedViews(raw) {
+  if (raw === null || !/^\d+$/.test(raw)) return;
+  const value = Number(raw);
+  if (!Number.isSafeInteger(value) || (lastViews !== null && value <= lastViews)) return;
+  lastViews = value;
+  viewCount.textContent = value.toLocaleString();
+  viewCount.title = 'Last confirmed view count';
+}
+
+async function refreshViews() {
+  try {
+    const stored = localStorage.getItem(viewsKey);
+    showSavedViews(stored);
+  } catch {
+    // Visitors who block storage still get the shared server count.
+  }
+
+  let total;
+  try {
+    total = await counter('hit', 'views');
+  } catch {
+    // The increment may already have reached the server. Only read it back.
+    try {
+      total = await counter('get', 'views');
+    } catch {
+      if (lastViews === null) viewCount.textContent = 'unavailable';
+      return;
+    }
+  }
+  showSavedViews(String(total));
+  try {
+    showSavedViews(localStorage.getItem(viewsKey));
+    localStorage.setItem(viewsKey, String(lastViews));
+  } catch {
+    // The current page can still display the confirmed count.
+  }
+}
+
+refreshViews();
 counter('get', 'likes')
   .then(total => { likeCount.textContent = total.toLocaleString(); })
   .catch(() => { likeCount.textContent = '—'; })
   .finally(updateLikeButton);
 
 window.addEventListener('storage', event => {
+  if (event.key === viewsKey) showSavedViews(event.newValue);
   if (event.key === storageKey && event.newValue !== null) {
     liked = true;
     likeCount.textContent = Number(event.newValue).toLocaleString();
