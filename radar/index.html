@@ -30,7 +30,13 @@ figure{margin:1.25rem 0 1.5rem;padding:1rem 0 .75rem;border-block:1px solid var(
 figure img{display:block;width:auto;height:auto;max-width:min(100%,25rem);max-height:min(18rem,36vh);max-height:min(18rem,36svh);margin:0 auto}
 figcaption{margin:.85rem auto 0;font-size:.9375rem;line-height:1.55;color:var(--muted)}
 figcaption strong{color:var(--ink)}
-.publisher-figure img{max-width:100%}
+/* Size each original from its intrinsic proportions. Give tall figures a height
+   budget, with a floor so a short landscape screen can scroll a legible figure. */
+.publisher-figure img{
+  max-width:100%;
+  max-height:clamp(26rem,80vh,44rem);
+  max-height:clamp(26rem,80svh,44rem)
+}
 .enlarge-image{display:block;width:fit-content;max-width:100%;margin:0 auto;border:0;background:transparent;padding:0;cursor:zoom-in}
 .enlarge-image:focus-visible{outline:2px solid var(--pine);outline-offset:4px}
 .image-viewer{padding:0;border:1px solid var(--rule);max-width:calc(100vw - 1rem);background:white}
@@ -100,20 +106,43 @@ figcaption strong{color:var(--ink)}
 </div><a href="#" data-en="Back to top ↑">回到顶部 ↑</a></footer></main>
 
 <dialog class="image-viewer" aria-label="原图" data-en-label="Original figure">
-<form method="dialog"><button autofocus data-en="Close figure">关闭原图</button></form>
+<form method="dialog"><button type="button" class="original-size" data-en="Original size" hidden>原始尺寸</button><button autofocus data-en="Close figure">关闭原图</button></form>
 <div class="image-viewport"><img alt=""></div>
 </dialog>
 <script>
+const viewer = document.querySelector(".image-viewer");
+const viewport = viewer.querySelector(".image-viewport");
+const full = viewport.querySelector("img");
+const originalSize = viewer.querySelector(".original-size");
+
+function centerOnFigure(x, y) {
+  viewport.scrollTo(full.offsetWidth * x - viewport.clientWidth / 2,
+                    full.offsetHeight * y - viewport.clientHeight / 2);
+}
+
 document.querySelector("main").addEventListener("click", event => {
   const button = event.target.closest(".enlarge-image");
   if (!button) return;
-  const viewer = document.querySelector(".image-viewer");
   const thumbnail = button.querySelector("img");
-  const full = viewer.querySelector("img");
+  const rect = thumbnail.getBoundingClientRect();
+  const readingWidth = Math.min(thumbnail.naturalWidth,
+                                Math.max(rect.width * 2, document.documentElement.clientWidth * 0.9));
   full.src = thumbnail.currentSrc;
   full.alt = thumbnail.alt;
+  full.style.aspectRatio = thumbnail.naturalWidth + " / " + thumbnail.naturalHeight;
+  full.style.width = readingWidth + "px";
+  originalSize.hidden = readingWidth >= thumbnail.naturalWidth;
   viewer.showModal();
-  full.parentElement.scrollTo(0, 0);
+  centerOnFigure(event.detail ? (event.clientX - rect.left) / rect.width : 0.5,
+                 event.detail ? (event.clientY - rect.top) / rect.height : 0);
+});
+originalSize.addEventListener("click", () => {
+  const x = (viewport.scrollLeft + viewport.clientWidth / 2) / full.offsetWidth;
+  const y = (viewport.scrollTop + viewport.clientHeight / 2) / full.offsetHeight;
+  full.style.width = full.naturalWidth + "px";
+  originalSize.hidden = true;
+  viewer.querySelector("[autofocus]").focus();
+  centerOnFigure(x, y);
 });
 </script>
 
